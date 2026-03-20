@@ -55,6 +55,13 @@
       font-size: 20px;
     }
 
+    #playAgain {
+      display: none;
+      margin-top: 15px;
+      background: white;
+      color: #333;
+    }
+
     a {
       color: white;
       text-decoration: none;
@@ -72,6 +79,8 @@
 
     <p id="result"></p>
     <p id="score"></p>
+
+    <button id="playAgain" onclick="restartQuiz()">🔁 Opnieuw spelen</button>
 
     <p><a href="index.html">← Terug</a></p>
   </div>
@@ -107,6 +116,9 @@
 
     function loadQuestion() {
       document.getElementById("result").innerText = "";
+      document.getElementById("score").innerText = "";
+      document.getElementById("playAgain").style.display = "none";
+
       document.getElementById("question").innerText = quiz[current].question;
 
       timeLeft = 10;
@@ -125,13 +137,7 @@
           if (current < quiz.length) {
             setTimeout(loadQuestion, 1000);
           } else {
-            setTimeout(() => {
-              document.getElementById("question").innerText = "Klaar!";
-              document.getElementById("answers").innerHTML = "";
-              document.getElementById("result").innerText = "";
-              document.getElementById("score").innerText = "Score: " + score + "/" + quiz.length;
-              document.getElementById("timer").innerText = "";
-            }, 1000);
+            setTimeout(showEndScreen, 1000);
           }
         }
       }, 1000);
@@ -162,14 +168,24 @@
       if (current < quiz.length) {
         setTimeout(loadQuestion, 1000);
       } else {
-        setTimeout(() => {
-          document.getElementById("question").innerText = "Klaar!";
-          document.getElementById("answers").innerHTML = "";
-          document.getElementById("result").innerText = "";
-          document.getElementById("score").innerText = "Score: " + score + "/" + quiz.length;
-          document.getElementById("timer").innerText = "";
-        }, 1000);
+        setTimeout(showEndScreen, 1000);
       }
+    }
+
+    function showEndScreen() {
+      document.getElementById("question").innerText = "Klaar!";
+      document.getElementById("answers").innerHTML = "";
+      document.getElementById("result").innerText = "";
+      document.getElementById("score").innerText = "Score: " + score + "/" + quiz.length;
+      document.getElementById("timer").innerText = "";
+      document.getElementById("playAgain").style.display = "inline-block";
+    }
+
+    function restartQuiz() {
+      clearInterval(timer);
+      current = 0;
+      score = 0;
+      loadQuestion();
     }
 
     loadQuestion();
