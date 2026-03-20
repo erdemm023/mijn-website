@@ -1,56 +1,73 @@
-quiz.html
-<!DOCTYPE html>
-<html lang="nl">
-<head>
-    <meta charset="UTF-8">
-    <title>Quiz</title>
-    <style>
-        body {
-            font-family: Arial;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            text-align: center;
-            padding: 50px;
-        }
-
-        .box {
-            background: rgba(255,255,255,0.1);
-            padding: 30px;
-            border-radius: 20px;
-            display: inline-block;
-        }
-
-        button {
-            margin: 10px;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-        }
-    </style>
-</head>
 <body>
 
-<div class="box">
-    <h1>🧠 Quiz</h1>
-    <p id="vraag">Wat is 2 + 2?</p>
+<div class="container">
+  <h1>🧠 Quiz</h1>
+  <p id="question">Vraag komt hier</p>
 
-    <button onclick="check(3)">3</button>
-    <button onclick="check(4)">4</button>
-    <button onclick="check(5)">5</button>
+  <div id="answers"></div>
 
-    <p id="resultaat"></p>
+  <p id="result"></p>
+  <p id="score"></p>
 </div>
 
 <script>
-function check(antwoord) {
-    if (antwoord === 4) {
-        document.getElementById("resultaat").innerText = "✅ Goed!";
-    } else {
-        document.getElementById("resultaat").innerText = "❌ Fout!";
-    }
+const quiz = [
+  {
+    question: "Wat is 2 + 2?",
+    answers: ["3", "4", "5"],
+    correct: "4"
+  },
+  {
+    question: "Wat is 5 + 3?",
+    answers: ["6", "8", "10"],
+    correct: "8"
+  },
+  {
+    question: "Wat is 10 - 4?",
+    answers: ["5", "6", "7"],
+    correct: "6"
+  }
+];
+
+let current = 0;
+let score = 0;
+
+function loadQuestion() {
+  document.getElementById("question").innerText = quiz[current].question;
+  const answersDiv = document.getElementById("answers");
+  answersDiv.innerHTML = "";
+
+  quiz[current].answers.forEach(answer => {
+    const btn = document.createElement("button");
+    btn.innerText = answer;
+    btn.onclick = () => checkAnswer(answer);
+    answersDiv.appendChild(btn);
+  });
 }
+
+function checkAnswer(answer) {
+  if (answer === quiz[current].correct) {
+    document.getElementById("result").innerText = "✅ Goed!";
+    score++;
+  } else {
+    document.getElementById("result").innerText = "❌ Fout!";
+  }
+
+  current++;
+
+  if (current < quiz.length) {
+    setTimeout(() => {
+      document.getElementById("result").innerText = "";
+      loadQuestion();
+    }, 1000);
+  } else {
+    document.getElementById("question").innerText = "Klaar!";
+    document.getElementById("answers").innerHTML = "";
+    document.getElementById("score").innerText = "Score: " + score + "/" + quiz.length;
+  }
+}
+
+loadQuestion();
 </script>
 
 </body>
-</html>
