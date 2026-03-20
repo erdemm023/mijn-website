@@ -3,38 +3,131 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mijn Website</title>
+  <title>Quiz</title>
 
   <style>
     body {
       margin: 0;
-      font-family: Arial;
+      font-family: Arial, sans-serif;
       background: linear-gradient(135deg, #667eea, #764ba2);
       color: white;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      min-height: 100vh;
     }
 
-    .container {
-      background: rgba(255, 255, 255, 0.1);
+    .box {
+      background: rgba(255,255,255,0.1);
       padding: 30px;
       border-radius: 20px;
       text-align: center;
+      width: 90%;
+      max-width: 500px;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    #resultaat {
+      font-size: 22px;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    a {
+      color: white;
     }
   </style>
-
 </head>
-
 <body>
 
-  <div class="container">
-    <h1>🔥 Mijn Website</h1>
-    <p>Hij werkt eindelijk 😎</p>
+  <div class="box">
+    <h1>🎮 Mijn Quiz</h1>
+    <p id="vraag">Vraag komt hier...</p>
 
-    <a href="quiz.html">🎮 Start Quiz</a>
+    <div id="antwoorden"></div>
+
+    <p id="resultaat"></p>
+    <a href="index.html">⬅ Terug naar home</a>
   </div>
+
+  <script>
+    const quiz = [
+      {
+        vraag: "Wat betekent HTML?",
+        antwoorden: ["Hyper Text Markup Language", "Home Tool Markup Language", "Hyper Transfer Main Link"],
+        goed: 0
+      },
+      {
+        vraag: "Waar gebruik je CSS voor?",
+        antwoorden: ["Voor styling", "Voor internet", "Voor bestanden verwijderen"],
+        goed: 0
+      },
+      {
+        vraag: "Wat doet een <a>-tag?",
+        antwoorden: ["Maakt een link", "Maakt een titel", "Maakt een afbeelding"],
+        goed: 0
+      }
+    ];
+
+    let huidigeVraag = 0;
+    let score = 0;
+
+    const vraagEl = document.getElementById("vraag");
+    const antwoordenEl = document.getElementById("antwoorden");
+    const resultaatEl = document.getElementById("resultaat");
+
+    function laadVraag() {
+      if (huidigeVraag < quiz.length) {
+        vraagEl.textContent = quiz[huidigeVraag].vraag;
+        antwoordenEl.innerHTML = "";
+        resultaatEl.textContent = "";
+
+        quiz[huidigeVraag].antwoorden.forEach((antwoord, index) => {
+          const knop = document.createElement("button");
+          knop.textContent = antwoord;
+          knop.onclick = () => checkAntwoord(index);
+          antwoordenEl.appendChild(knop);
+        });
+      } else {
+        eindeQuiz();
+      }
+    }
+
+    function checkAntwoord(index) {
+      if (index === quiz[huidigeVraag].goed) {
+        score++;
+      }
+      huidigeVraag++;
+      laadVraag();
+    }
+
+    function eindeQuiz() {
+      vraagEl.textContent = "Quiz afgelopen!";
+      antwoordenEl.innerHTML = "";
+
+      if (score >= 2) {
+        resultaatEl.textContent = "🏆 Jij hebt gewonnen! Score: " + score + "/" + quiz.length;
+      } else {
+        resultaatEl.textContent = "😢 Je hebt verloren. Score: " + score + "/" + quiz.length;
+      }
+    }
+
+    laadVraag();
+  </script>
 
 </body>
 </html>
