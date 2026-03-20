@@ -14,7 +14,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      min-height: 100vh;
     }
 
     .container {
@@ -121,6 +121,16 @@
 
       document.getElementById("question").innerText = quiz[current].question;
 
+      const answersDiv = document.getElementById("answers");
+      answersDiv.innerHTML = "";
+
+      quiz[current].answers.forEach(answer => {
+        const btn = document.createElement("button");
+        btn.innerText = answer;
+        btn.onclick = () => checkAnswer(answer);
+        answersDiv.appendChild(btn);
+      });
+
       timeLeft = 10;
       document.getElementById("timer").innerText = "Tijd: " + timeLeft;
 
@@ -141,26 +151,16 @@
           }
         }
       }, 1000);
-
-      const answersDiv = document.getElementById("answers");
-      answersDiv.innerHTML = "";
-
-      quiz[current].answers.forEach(answer => {
-        const btn = document.createElement("button");
-        btn.innerText = answer;
-        btn.onclick = () => checkAnswer(answer);
-        answersDiv.appendChild(btn);
-      });
     }
 
     function checkAnswer(answer) {
       clearInterval(timer);
 
       if (answer === quiz[current].correct) {
-        document.getElementById("result").innerHTML = "✅ Goed!";
+        document.getElementById("result").innerHTML = "<span style='color:lightgreen;'>✅ Goed!</span>";
         score++;
       } else {
-        document.getElementById("result").innerHTML = "❌ Fout!";
+        document.getElementById("result").innerHTML = "<span style='color:#ff8080;'>❌ Fout!</span>";
       }
 
       current++;
@@ -173,6 +173,7 @@
     }
 
     function showEndScreen() {
+      clearInterval(timer);
       document.getElementById("question").innerText = "Klaar!";
       document.getElementById("answers").innerHTML = "";
       document.getElementById("result").innerText = "";
