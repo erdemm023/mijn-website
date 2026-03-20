@@ -1,142 +1,179 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Quiz</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz</title>
 
-<style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
 
-.container {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 30px;
-  border-radius: 20px;
-  text-align: center;
-  width: 90%;
-  max-width: 500px;
-}
+    .container {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 30px;
+      border-radius: 20px;
+      text-align: center;
+      width: 90%;
+      max-width: 500px;
+    }
 
-button {
-  margin: 10px 5px;
-  padding: 12px 18px;
-  border-radius: 12px;
-  border: none;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: bold;
-  transition: 0.3s;
-}
+    button {
+      margin: 10px 5px;
+      padding: 12px 18px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      transition: 0.3s;
+    }
 
-button:hover {
-  transform: scale(1.05);
-  opacity: 0.9;
-}
+    button:hover {
+      transform: scale(1.05);
+      opacity: 0.9;
+    }
 
-#result, #score {
-  margin-top: 15px;
-  font-weight: bold;
-}
+    #timer {
+      margin-top: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #ffd966;
+    }
 
-a {
-  color: white;
-  text-decoration: none;
-}
-</style>
+    #result, #score {
+      margin-top: 15px;
+      font-weight: bold;
+      font-size: 20px;
+    }
+
+    a {
+      color: white;
+      text-decoration: none;
+    }
+  </style>
 </head>
-
 <body>
 
-<div class="container">
-  <h1>🔥 Quiz</h1>
-  <p id="question">Vraag komt hier</p>
+  <div class="container">
+    <h1>🔥 Quiz</h1>
+    <p id="question">Vraag komt hier</p>
+    <p id="timer">Tijd: 10</p>
 
-  <div id="answers"></div>
+    <div id="answers"></div>
 
-  <p id="result"></p>
-  <p id="score"></p>
+    <p id="result"></p>
+    <p id="score"></p>
 
-  <p><a href="index.html">← Terug</a></p>
-</div>
+    <p><a href="index.html">← Terug</a></p>
+  </div>
 
-<script>
+  <script>
+    const quiz = [
+      {
+        question: "Wat is 3 x 3?",
+        answers: ["6", "9", "12"],
+        correct: "9"
+      },
+      {
+        question: "Wat is 2 + 2?",
+        answers: ["3", "4", "5"],
+        correct: "4"
+      },
+      {
+        question: "Wat is 5 + 3?",
+        answers: ["6", "8", "10"],
+        correct: "8"
+      },
+      {
+        question: "Wat is 10 - 4?",
+        answers: ["5", "6", "7"],
+        correct: "6"
+      }
+    ];
 
-const quiz = [
-  {
-    question: "Wat is 3 x 3?",
-    answers: ["6", "9", "12"],
-    correct: "9"
-  },
-  {
-    question: "Wat is 2 + 2?",
-    answers: ["3", "4", "5"],
-    correct: "4"
-  },
-  {
-    question: "Wat is 5 + 3?",
-    answers: ["6", "8", "10"],
-    correct: "8"
-  },
-  {
-    question: "Wat is 10 - 4?",
-    answers: ["5", "6", "7"],
-    correct: "6"
-  }
-];
+    let current = 0;
+    let score = 0;
+    let timeLeft = 10;
+    let timer;
 
-let current = 0;
-let score = 0;
-
-function loadQuestion() {
-  document.getElementById("result").innerText = "";
-  document.getElementById("question").innerText = quiz[current].question;
-
-  const answersDiv = document.getElementById("answers");
-  answersDiv.innerHTML = "";
-
-  quiz[current].answers.forEach(answer => {
-    const btn = document.createElement("button");
-    btn.innerText = answer;
-    btn.onclick = () => checkAnswer(answer);
-    answersDiv.appendChild(btn);
-  });
-}
-
-function checkAnswer(answer) {
-  if (answer === quiz[current].correct) {
-    document.getElementById("result").innerText = "✅ Goed!";
-    score++;
-  } else {
-    document.getElementById("result").innerText = "❌ Fout!";
-  }
-
-  current++;
-
-  if (current < quiz.length) {
-    setTimeout(loadQuestion, 1000);
-  } else {
-    setTimeout(() => {
-      document.getElementById("question").innerText = "Klaar!";
-      document.getElementById("answers").innerHTML = "";
+    function loadQuestion() {
       document.getElementById("result").innerText = "";
-      document.getElementById("score").innerText =
-        "Score: " + score + "/" + quiz.length;
-    }, 1000);
-  }
-}
+      document.getElementById("question").innerText = quiz[current].question;
 
-loadQuestion();
+      timeLeft = 10;
+      document.getElementById("timer").innerText = "Tijd: " + timeLeft;
 
-</script>
+      clearInterval(timer);
+      timer = setInterval(() => {
+        timeLeft--;
+        document.getElementById("timer").innerText = "Tijd: " + timeLeft;
+
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          document.getElementById("result").innerHTML = "<span style='color:#ff8080;'>⏰ Tijd op!</span>";
+          current++;
+
+          if (current < quiz.length) {
+            setTimeout(loadQuestion, 1000);
+          } else {
+            setTimeout(() => {
+              document.getElementById("question").innerText = "Klaar!";
+              document.getElementById("answers").innerHTML = "";
+              document.getElementById("result").innerText = "";
+              document.getElementById("score").innerText = "Score: " + score + "/" + quiz.length;
+              document.getElementById("timer").innerText = "";
+            }, 1000);
+          }
+        }
+      }, 1000);
+
+      const answersDiv = document.getElementById("answers");
+      answersDiv.innerHTML = "";
+
+      quiz[current].answers.forEach(answer => {
+        const btn = document.createElement("button");
+        btn.innerText = answer;
+        btn.onclick = () => checkAnswer(answer);
+        answersDiv.appendChild(btn);
+      });
+    }
+
+    function checkAnswer(answer) {
+      clearInterval(timer);
+
+      if (answer === quiz[current].correct) {
+        document.getElementById("result").innerHTML = "✅ Goed!";
+        score++;
+      } else {
+        document.getElementById("result").innerHTML = "❌ Fout!";
+      }
+
+      current++;
+
+      if (current < quiz.length) {
+        setTimeout(loadQuestion, 1000);
+      } else {
+        setTimeout(() => {
+          document.getElementById("question").innerText = "Klaar!";
+          document.getElementById("answers").innerHTML = "";
+          document.getElementById("result").innerText = "";
+          document.getElementById("score").innerText = "Score: " + score + "/" + quiz.length;
+          document.getElementById("timer").innerText = "";
+        }, 1000);
+      }
+    }
+
+    loadQuestion();
+  </script>
 
 </body>
 </html>
